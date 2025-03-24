@@ -2,7 +2,9 @@ import NextAuth, { User } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import clientPromise from "@/lib/db";
 
-export const authOptions = {
+import { NextAuthOptions } from "next-auth";
+
+export const authOptions: NextAuthOptions = {
   providers: [
     Credentials({
       name: "Credentials",
