@@ -10,7 +10,7 @@ export interface WalletHolder {
 }
 
 export interface Item{
-    item_name: string;
+    item_name?: string;
     status?: string;
     description?: string;
     logo?: string;
@@ -53,8 +53,13 @@ export interface Item{
 }
 
 export interface PnlType{
-    button_title: string;
-    pnl_data_type: string;
-    items: Item
+    button_title?: string;
+    pnl_data_type?: string;
+    items?: Item
 }
 
+export interface PnlTypeData{
+    pnl_type_data: PnlType;
+    loading: boolean,
+    error: string | null,
+}

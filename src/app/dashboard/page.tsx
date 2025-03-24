@@ -1,14 +1,18 @@
 'use client';
+import Loader from '@/components/Loader';
 import useAuth from '@/hooks/useAuth';
 import React from 'react'
 
 export default function Dashboard() {
-  const { logout, user } = useAuth();
-  
+  const { logout, user, loading } = useAuth();
+
   return (
     <>
-    {user ? <div>Loading...</div> : <div>Dashboard</div>}
-    <button onClick={logout}>Logout</button>
+    {!loading ? 
+    <>
+      <div>Dashboard {user?.name}</div>
+      <button onClick={logout}>Logout</button>
+    </> : <Loader/>}
     </>
   )
 }

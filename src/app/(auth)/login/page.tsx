@@ -19,8 +19,8 @@ export default function LoginPage() {
       <form onSubmit={handleLogin}>
           <h1>Login</h1>
           <div className="m-bottom-20">
-              <label htmlFor="name">Username</label>
-              <input type="text" id="name" value={email} onChange={(e) => (setEmail(e.target.value))}/>
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" value={email} onChange={(e) => (setEmail(e.target.value))}/>
           </div>
           <div className="m-bottom-30">
               <label htmlFor="password">Password</label>

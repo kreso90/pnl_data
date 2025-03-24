@@ -20,11 +20,10 @@ const authOptions: NextAuthOptions = {
           const client = await clientPromise;
           const db = client.db("pnl_data");
 
-          const user = await db.collection("users").findOne({email: credentials.email});
+          const user = await db.collection("users").findOne({email: credentials.email, password: credentials.password});
 
           if (user) {
-            console.log(user)
-            return {id: "asd"};
+            return {email: user!.email, name: user.username} as User;
           } else {
             throw new Error("Invalid email or password");
           }
@@ -39,7 +38,7 @@ const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async session({ session, token }: any) {
+    async session({ session }: any) {
       return session;
     },
   }

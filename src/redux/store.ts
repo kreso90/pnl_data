@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '@/redux/slices/useAuth'
+import authReducer from '@/redux/slices/AuthSlice'
+import pnlDataReducer from '@/redux/slices/PnlDataSlice'
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer
+    auth: authReducer,
+    pnlData: pnlDataReducer
   },
 });
 

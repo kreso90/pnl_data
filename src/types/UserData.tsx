@@ -1,7 +1,8 @@
-export interface User{
-    id: string,
-    email: string,
-    password: string,
+export interface User {
+    id?: string; // Make optional
+    name: string; // Make optional
+    email: string;
+    password?: string; // Make optional
 }
 
 export interface UserData{
