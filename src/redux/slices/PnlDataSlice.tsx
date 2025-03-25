@@ -2,7 +2,7 @@ import { PnlType, PnlTypeData } from "@/types/PnlData";;
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: PnlTypeData = {
-    pnl_type_data: {},
+    data: [],
     loading: true,
     error: null,
 };
@@ -15,8 +15,8 @@ const pnlDataSlice = createSlice({
         state.loading = true;
         state.error = null;
     },
-    pnlDataFetchSuccess(state, action: PayloadAction<PnlType>) {
-        state.pnl_type_data = action.payload,
+    pnlDataFetchSuccess(state, action: PayloadAction<[PnlType]>) {
+        state.data = action.payload,
         state.loading = false;
         state.error = null;
     },

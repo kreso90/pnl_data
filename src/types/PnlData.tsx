@@ -9,7 +9,8 @@ export interface WalletHolder {
     wallet_address_deployer?: string;
 }
 
-export interface Item{
+export interface ItemDetails{
+    number?: string;
     item_name?: string;
     status?: string;
     description?: string;
@@ -50,16 +51,27 @@ export interface Item{
     subscribers?: string;
     total_videos?: string;
     monthly_frequency?: string;
+    wallet_address?: string;
 }
 
 export interface PnlType{
     button_title?: string;
+    button_subtitle_1?: string,
+    button_subtitle_2?: string,
+    pnl_data_title_1?: string,
+    pnl_data_title_2?: string,
+    pnl_data_title_3?: string,
+    pnl_data_subtitle?: string,
+    pnl_data_title_small_1?: string;
+    pnl_data_title_small_2?: string;
     pnl_data_type?: string;
-    items?: Item
+    link?: string;
+    copy_text?: string;
+    items?: Record<string, ItemDetails>;
 }
 
 export interface PnlTypeData{
-    pnl_type_data: PnlType;
+    data: PnlType[];
     loading: boolean,
     error: string | null,
 }
