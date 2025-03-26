@@ -1,6 +1,6 @@
 import { ItemDetails } from "@/types/PnlData";
 import React, { useEffect, useState } from "react";
-import Pagination from "./PaginationList";
+import PaginationList from "./PaginationList";
 import ItemsDetails from "./ItemsDetails";
 import { HiX } from "react-icons/hi";
 
@@ -78,7 +78,7 @@ export default function ItemsList({
     </div>
 
     <div className="box__content">
-      <Pagination itemsPerPage={5} items={items} handleItemClick={handleItemClick}/>
+      <PaginationList itemsPerPage={5} items={items} handleItemClick={handleItemClick}/>
       {selectedItem && <ItemsDetails pnl_data_type={pnl_data_type!} details={selectedItem}/>}
     </div>
   </div>

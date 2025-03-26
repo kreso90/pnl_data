@@ -8,7 +8,7 @@ interface PaginationProps{
   handleItemClick: (item: ItemDetails) => void; 
 }
 
-export default function Pagination({items, itemsPerPage, handleItemClick}: PaginationProps) {
+export default function PaginationList({items, itemsPerPage, handleItemClick}: PaginationProps) {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const totalPages = Math.ceil((items ? Object.keys(items).length : 0) / itemsPerPage);
