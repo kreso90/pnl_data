@@ -69,6 +69,7 @@ export default function HomePage() {
                       selectedButton={selectedPnlType?.pnl_data_type}
                       pnl_data={pnlType}
                       handleClickButon={() => handleButtonClick(pnlType)}
+                      isDashButton={false}
                     />
                   </div>
                 ))}
@@ -87,6 +88,7 @@ export default function HomePage() {
                       selectedButton={selectedPnlType?.pnl_data_type}
                       pnl_data={pnlType}
                       handleClickButon={() => handleButtonClick(pnlType)}
+                      isDashButton={false}
                     />
                   </div>
                 ))}

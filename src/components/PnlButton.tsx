@@ -1,5 +1,6 @@
 import { PnlType } from '@/types/PnlData';
 import { handleCopy } from '@/utils/clipboardUtils';
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 interface PnlButtonProps {
@@ -11,10 +12,11 @@ interface PnlButtonProps {
     pnl_data_type?: string;
     selectedButton?: string;
     pnl_data?: PnlType,
+    isDashButton: boolean,
     handleClickButon?: (pnl_data_type: string, pnl_data: PnlType) => void;
 }
 
-export default function PnlButton({ title, button_subtitle_1, button_subtitle_2, link, copy_text, pnl_data_type, selectedButton, pnl_data, handleClickButon }: PnlButtonProps) {
+export default function PnlButton({ title, button_subtitle_1, button_subtitle_2, link, copy_text, pnl_data_type, selectedButton, pnl_data, handleClickButon, isDashButton }: PnlButtonProps) {
 
   const handleButtonClick = () => {
     const selectedText = copy_text || pnl_data_type || '';
@@ -48,6 +50,10 @@ export default function PnlButton({ title, button_subtitle_1, button_subtitle_2,
     <a href={link} target="_blank" rel="noopener noreferrer">
       {ButtonContent}
     </a>
+  ) : isDashButton ? (
+    <Link href={`/pnl-single/${pnl_data_type}`}>
+      {ButtonContent}
+    </Link>
   ) : (
     ButtonContent
   );

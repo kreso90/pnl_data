@@ -75,3 +75,9 @@ export interface PnlTypeData{
     loading: boolean,
     error: string | null,
 }
+
+export interface PnlSingleTypeData{
+    singleData: PnlType;
+    loading: boolean,
+    error: string | null,
+}
