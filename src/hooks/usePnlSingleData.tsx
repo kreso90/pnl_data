@@ -183,39 +183,57 @@ const usePnLSingleData = (pnl_data_type: string) =>{
 
     const handleInputChange = (itemKey: string, field: string, value: string) => {
       console.log(itemKey, field, value);
+      
       setSingleItemData((prevData) => {
         const updatedItem = { ...prevData[itemKey] };
-
+    
         if (field.startsWith("wallet_holders")) {
           const match = field.match(/^wallet_holders(\d+)(.+)$/);
           if (match) {
             const index = Number(match[1]);
             const holderField = match[2];
           
+            // Ensure wallet_holders is an array and initialize it if needed
             if (!updatedItem.wallet_holders || !Array.isArray(updatedItem.wallet_holders)) {
               updatedItem.wallet_holders = [];
             }
     
+            // Initialize the holder at the specific index if it doesn't exist
             if (!updatedItem.wallet_holders[index]) {
               updatedItem.wallet_holders[index] = {};
             }
     
+            // Update the specific field for the holder
             updatedItem.wallet_holders[index] = {
               ...updatedItem.wallet_holders[index],
               [holderField]: value,
             };
           }
-        }else{
+        } else {
+          // Directly update the field if it's not a wallet_holders field
           updatedItem[field] = value;
         }
+    
         return {
           ...prevData,
           [itemKey]: updatedItem,
         };
-      })
-    }
+      });
+    };
+    
 
-    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange };
+    const handleUpdateItems = async (pnl_data_type: string) => {
+      const response = await fetch(`/api/pnl_single/${pnl_data_type}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items: singleItemData })
+      });
+  
+      const data = await response.json();
+      console.log("Update Response:", data);
+    };
+    
+    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems };
 
 }
 

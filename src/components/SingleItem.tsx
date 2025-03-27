@@ -31,7 +31,6 @@ export default function Single({itemKey, itemName, singleItemData, onInputChange
 
   };
 
-
   return (
     <div key={itemKey} className="track" ref={setNodeRef} style={style}>
       <div className="font-18 flex-v-center space-between" onClick={(e) => toggleDropdown(itemKey!, e)}>
@@ -62,12 +61,12 @@ export default function Single({itemKey, itemName, singleItemData, onInputChange
           ))}
           </ul>
           
-          {singleItemData && Object.entries(singleItemData[itemKey].wallet_holders).map(([field, index]: any) => (
+          {singleItemData![itemKey].wallet_holders  && Object.entries(singleItemData![itemKey].wallet_holders).map(([field, index]: any) => (
             <div key={field + index}>
               <h2>Wallet Holder {field}</h2>
               <ul>
                 {Object.entries(index as Record<string, any>).map(([holderkey, holdervalue]) => (
-                  <li key={index + holderkey + holdervalue}>
+                  <li key={index + holderkey}>
                     <label className="block font-medium">{holderkey.replace(/_/g, " ")}</label>
                     <input
                       type="text"
