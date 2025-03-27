@@ -1238,6 +1238,27 @@ input:focus{
   font-size: 12px;
 }
 
+.track p{
+  font-size: 12px;
+  overflow: hidden;
+  hyphens: auto;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+@media(min-width: 360px){
+  .track p{
+    max-width: 280px;
+  }
+}
+
+@media(min-width: 768px){
+  .track p{
+    font-size: 14px;
+    max-width: unset;
+  }
+}
+
 @media(min-width: 1024px){
   .track{
     font-size: 14px;
