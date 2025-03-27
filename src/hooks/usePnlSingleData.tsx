@@ -3,6 +3,7 @@ import { RootState } from "@/redux/store";
 import { ItemDetails, PnlType, WalletHolder } from "@/types/PnlData";
 import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import { PutBlobResult } from "@vercel/blob";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -347,8 +348,25 @@ const usePnLSingleData = (pnl_data_type: string) =>{
         console.error("Error deleting item:", data.error);
       }
     };
+
+    const fileUpload = async (inputFileRef: React.RefObject<HTMLInputElement>) => {
+      if (!inputFileRef.current?.files) {
+        throw new Error("No file selected");
+      }
+
+      const file = inputFileRef.current.files[0];
+
+      const response = await fetch(
+        `/api/file?filename=${file.name}`,
+        {
+          method: 'POST',
+          body: file,
+        },
+      );
+    };
     
-    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem };
+    
+    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload };
 
 }
 

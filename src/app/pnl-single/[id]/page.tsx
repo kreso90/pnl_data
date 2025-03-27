@@ -7,16 +7,19 @@ import { DndContext, PointerSensor, TouchSensor, useSensor, useSensors } from '@
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { HiOutlineArrowLeft } from 'react-icons/hi';
 import { isMobile } from 'react-device-detect';
+import { PutBlobResult } from '@vercel/blob';
 
 
 export default function PnlSinglePage() {
   const { id } = useParams();
   const { logout } = useAuth();
-  const { singleData, loading, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem } = usePnlSingleData(id as string); 
+  const { singleData, loading, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload } = usePnlSingleData(id as string); 
   const [ useNewItemName, setNewItemName ] = useState('')
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const [blob, setBlob] = useState<PutBlobResult | null>(null);
 
   const sensors = useSensors(
     ...(isMobile ? [useSensor(TouchSensor, { activationConstraint: { delay: 0, tolerance: 5 } })] 
@@ -40,6 +43,13 @@ export default function PnlSinglePage() {
           <button onClick={logout}>Logout</button>
       </nav>
 
+      <div>
+      <input type="file" ref={inputFileRef} />
+      <button onClick={() => fileUpload(inputFileRef as React.RefObject<HTMLInputElement>)}>
+        Upload
+      </button>
+    </div>
+
       <div className="dashboard-container">
         <div className="m-top-20">
           <div className="row space-between flex-align-end">
@@ -53,6 +63,7 @@ export default function PnlSinglePage() {
             </div>
           </div>
         </div>
+        
 
         <DndContext sensors={sensors} onDragEnd={(e) => handleDragEnd(e, id as string)}>
           <SortableContext items={singleData?.items ? Object.keys(singleData.items) : []} strategy={verticalListSortingStrategy}>
