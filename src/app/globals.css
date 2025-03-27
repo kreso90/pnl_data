@@ -425,6 +425,7 @@ form{
   border-radius: 4px; 
 }
 
+select,
 input{
   padding: 4px;
   border-radius: 4px;
@@ -436,6 +437,13 @@ input{
   font-size: 18px;
   line-height: 24px;
   border: 2px solid var(--turquoise-opacity);
+}
+
+input[type="file"]{
+  max-width: 250px;
+  margin-right: 10px;
+  font-size: 14px;
+  padding: 2px;
 }
 
 input:focus{
@@ -456,10 +464,15 @@ input:focus{
 .space-between{justify-content: space-between;}
 .space-center{justify-content: center;}
 .space-around{justify-content: space-around;}
+.flex-justify-end{justify-content: flex-end;}
 
 .flex-v-center{
   display: flex;
   align-items: center;
+}
+
+@media(min-width: 768px){
+  .flex-md-justify-end{justify-content: flex-end;}
 }
 
 @media(min-width: 1024px){

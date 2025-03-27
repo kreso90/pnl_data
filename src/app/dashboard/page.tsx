@@ -32,7 +32,8 @@ export default function Dashboard() {
         </nav>
         
         <div className="row">
-          {data.map((pnlType, index) => (            
+          {data.map((pnlType, index) => (   
+            pnlType?.pnl_data_type && pnlType.pnl_data_type !== '' ? (         
             <div key={index} className="col xs-6 s-4 lg-2">
               <PnlButton 
                 title={pnlType.button_title ?? ""} 
@@ -47,7 +48,7 @@ export default function Dashboard() {
                 isDashButton={true}
               />
             </div>
-          ))}
+          ) : null ))}
         </div>
       </div>
     </div> : <Loader/>}

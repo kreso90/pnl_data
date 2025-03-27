@@ -52,6 +52,7 @@ export interface ItemDetails{
     total_videos?: string;
     monthly_frequency?: string;
     wallet_address?: string;
+    box_image?: string;
 }
 
 export interface PnlType{

@@ -30,7 +30,7 @@ export default function PnlButton({ title, button_subtitle_1, button_subtitle_2,
     }
   };
 
-  const isActive = selectedButton === pnl_data_type;
+  const isActive = pnl_data_type && selectedButton === pnl_data_type;
   const buttonClass = `pnl-button ${isActive ? "active" : ""}`;
 
   const ButtonContent = (

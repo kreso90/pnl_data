@@ -13,6 +13,7 @@ const usePnLSingleData = (pnl_data_type: string) =>{
 
     const { loading, error, singleData } = useSelector((state: RootState) => state.pnlSingleDataReducer);
     const [ singleItemData, setSingleItemData ] = useState<Record<string, Record<string, string | WalletHolder[]>>>({})
+    const [blobs, setBlobs] = useState([]);
     const [newWalletHolder, setNewWalletHolder] = useState(() => {
       return pnl_data_type === "meme_coins"
         ? {
@@ -41,8 +42,15 @@ const usePnLSingleData = (pnl_data_type: string) =>{
       }
     };
 
+    const fetchBlobsData = async () => {
+      const response = await fetch("/api/file");
+      const data = await response.json();
+      setBlobs(data);
+    }
+
     useEffect(() => {
-        fetchWallets();
+      fetchWallets();
+      fetchBlobsData();
     }, [dispatch])
 
     useEffect(() => {
@@ -74,7 +82,7 @@ const usePnLSingleData = (pnl_data_type: string) =>{
                   pnl_data_score: item.pnl_data_score || "",
                 }),
                 ...(pnl_data_type === "daily_best" && { 
-                  image_date: item.image_date || "",
+                  box_image: item.box_image || "",
                   wallet_address: item.wallet_address || "",
                   win_rate: item.win_rate || "",
                   average_lose_percentage: item.average_lose_percentage || "",
@@ -256,9 +264,12 @@ const usePnLSingleData = (pnl_data_type: string) =>{
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ items: singleItemData })
       });
-  
-      const data = await response.json();
-      console.log("Update Response:", data);
+
+      if(response.ok){
+        alert("List data is updated")
+      }else{
+        alert("Something went wrong")
+      }
     };
 
     const handleAddNewItem = async (pnl_data_type: string, itemName: string) => {
@@ -363,24 +374,16 @@ const usePnLSingleData = (pnl_data_type: string) =>{
           body: file,
         },
       );
-    };
-    
-    const blobs = async () => {
-      const { blobs } = await list({
-        token: process.env.BLOB_READ_WRITE_TOKEN, // Use the correct env var
-      });
-      console.log({ blobs });
-      return blobs;
-    };
 
-    useEffect(() => {
-      const fetchBlobs = async () => {
-        const data = await blobs();
-        console.log("Fetched blobs:", data);
-      };
-    
-      fetchBlobs();
-    }, []);
+      if(response.ok){
+        alert("Image is uploaded")
+        inputFileRef.current.value = ""; 
+        fetchBlobsData();
+      }else{
+        alert("Something went wrong")
+      }
+
+    };
     
     return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs };
 

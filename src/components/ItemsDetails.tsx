@@ -71,9 +71,10 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
     return (
         <div className={`box__details-wrapper p-0 extra-box ${isActive ? "active" : ""}`}>
           <div className='box__image-wrapper effect-delay-1'>
+            {details.box_image != '' ?
             <div className='box__image'>
-                <img src="images/logo/bullx.png" alt={details.logo} style={{height:"100%"}}/>
-            </div>
+                <img src={details.box_image} alt={details.box_image} style={{height:"100%"}}/>
+            </div> : <div className='box__image'></div>}
           </div>
 
           <div className="box__details extra-box effect-delay-2">
@@ -196,7 +197,7 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
         <div className={`box__details-wrapper box-logo-left ${isActive ? "active" : ""}`}>
 
             <div className="box__logo">
-                <img className="effect-delay-1" src={`images/logo/${details.logo}`} alt={details.logo} />
+                <img className="effect-delay-1" src={details.logo} alt={details.logo} />
             </div>
           
             <div className="box__details lg">
@@ -278,14 +279,14 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
     return(
         <div className={`box__details-wrapper box-logo-right ${isActive ? "active" : ""}`}>
             <div className="box__logo">
-                <img className="effect-delay-1" src={`images/logo/${details.profile_img}`} alt={details.profile_img} />
+                <img className="effect-delay-1" src={details.profile_img} alt={details.profile_img} />
             </div>
             <div className="box__details lg">
                 <div className="row">
                     <div className="col md-6 effect-delay-2">
                         <div className="flex-v-center">
                             <div className="box__details-logo gold m-right-10">
-                                <img src={`images/logo/${details.logo}`} alt={details.logo} />
+                                <img src={details.logo} alt={details.logo} />
                             </div>
                             <div className="title-bg brown">
                                 {details.item_name}
@@ -365,7 +366,7 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
                     </div>
                     <div className="col md-4 effect-delay-3">
                         <div className="box__details-logo m-side-auto m-top-10 m-bottom-10 m-lg-0 m-lg-left-auto">
-                            <img src={`images/logo/${details.logo}`} alt={details.logo} />
+                            <img src={details.logo} alt={details.logo} />
                         </div>
                     </div>
                 </div>
@@ -460,7 +461,7 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
 
                 <div className="p-10 effect-delay-3">
                     <div className="box__details-logo md">
-                        <img src={`images/logo/${details.logo}`} alt={details.logo} />
+                        <img src={details.logo} alt={details.logo} />
                     </div>
                 </div>
             </div>
@@ -473,7 +474,7 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
         <div className={`box__details-wrapper box-logo-left ${isActive ? "active" : ""}`}>
 
             <div className="box__logo">
-                <img className="effect-delay-1" src={`images/logo/${details.logo}`} alt={details.logo} />
+                <img className="effect-delay-1" src={details.logo} alt={details.logo} />
             </div>
           
             <div className="box__details lg">
@@ -542,14 +543,14 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
     return(
         <div className={`box__details-wrapper box-logo-right ${isActive ? "active" : ""}`}>
             <div className="box__logo">
-                <img className="effect-delay-1" src={`images/logo/${details.profile_img}`} alt={details.profile_img} />
+                <img className="effect-delay-1" src={details.profile_img} alt={details.profile_img} />
             </div>
             <div className="box__details lg">
                 <div className="row">
                     <div className="col md-6 effect-delay-2">
                         <div className="flex-v-center">
                             <div className="box__details-logo gold m-right-10">
-                                <img src={`images/logo/${details.logo}`} alt={details.logo} />
+                                <img src={details.logo} alt={details.logo} />
                             </div>
                             <div className="title-bg brown">
                                 {details.item_name}
