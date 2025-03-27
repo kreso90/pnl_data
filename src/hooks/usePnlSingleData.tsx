@@ -3,7 +3,7 @@ import { RootState } from "@/redux/store";
 import { ItemDetails, PnlType, WalletHolder } from "@/types/PnlData";
 import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { PutBlobResult } from "@vercel/blob";
+import { list } from "@vercel/blob";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -365,8 +365,24 @@ const usePnLSingleData = (pnl_data_type: string) =>{
       );
     };
     
+    const blobs = async () => {
+      const { blobs } = await list({
+        token: process.env.BLOB_READ_WRITE_TOKEN, // Use the correct env var
+      });
+      console.log({ blobs });
+      return blobs;
+    };
+
+    useEffect(() => {
+      const fetchBlobs = async () => {
+        const data = await blobs();
+        console.log("Fetched blobs:", data);
+      };
     
-    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload };
+      fetchBlobs();
+    }, []);
+    
+    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs };
 
 }
 

@@ -16,7 +16,7 @@ import { PutBlobResult } from '@vercel/blob';
 export default function PnlSinglePage() {
   const { id } = useParams();
   const { logout } = useAuth();
-  const { singleData, loading, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload } = usePnlSingleData(id as string); 
+  const { singleData, loading, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs } = usePnlSingleData(id as string); 
   const [ useNewItemName, setNewItemName ] = useState('')
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [blob, setBlob] = useState<PutBlobResult | null>(null);

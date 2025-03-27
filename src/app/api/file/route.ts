@@ -10,7 +10,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         const blob = await put(filename, request.body, {
             access: 'public',
         });
-        console.log(blob)
+
         return NextResponse.json(blob);
     }else{
         return NextResponse.json({message: "No file"});
