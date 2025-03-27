@@ -12,20 +12,35 @@ const usePnLSingleData = (pnl_data_type: string) =>{
 
     const { loading, error, singleData } = useSelector((state: RootState) => state.pnlSingleDataReducer);
     const [ singleItemData, setSingleItemData ] = useState<Record<string, Record<string, string | WalletHolder[]>>>({})
+    const [newWalletHolder, setNewWalletHolder] = useState(() => {
+      return pnl_data_type === "meme_coins"
+        ? {
+            wallet_address: "",
+            total_holdings: "",
+            amount_sold_in: "",
+            holdings_in: "",
+            holdings_since: "",
+          }
+        : {
+            wallet_address_deployer: "",
+            total_deployed_projects: "",
+            total_migrated: "",
+          };
+    });
+    
+
+    const fetchWallets = async () => {
+      dispatch(pnlSingleDataLoading());
+      try {
+          const response = await fetch(`/api/pnl_single/${pnl_data_type}`);
+          const singleData: PnlType = await response.json();
+          dispatch(pnlSingleDataFetchSuccess(singleData));
+      } catch (error) {
+          dispatch(pnlSingleDataFetchError("Failed to load single PnL Data"));
+      }
+    };
 
     useEffect(() => {
-
-        const fetchWallets = async () => {
-            dispatch(pnlSingleDataLoading());
-            try {
-                const response = await fetch(`/api/pnl_single/${pnl_data_type}`);
-                const singleData: PnlType = await response.json();
-                dispatch(pnlSingleDataFetchSuccess(singleData));
-            } catch (error) {
-                dispatch(pnlSingleDataFetchError("Failed to load single PnL Data"));
-            }
-        };
-
         fetchWallets();
     }, [dispatch])
 
@@ -158,69 +173,81 @@ const usePnLSingleData = (pnl_data_type: string) =>{
     }, [singleData, pnl_data_type])
 
 
-    async function handleDragEnd(event: DragEndEvent, item_type: string) {
+    const handleDragEnd = async (event: DragEndEvent, item_type: string) => {
       const { active, over } = event;
-  
+    
       if (!over || !singleData.items || active.id === over.id) return;
-  
+    
       const walletKeys = Object.keys(singleData.items);
       const oldIndex = walletKeys.indexOf(active.id as string);
       const newIndex = walletKeys.indexOf(over.id as string);
-  
+    
       if (oldIndex === -1 || newIndex === -1) return;
-  
+    
       const reorderedKeys = arrayMove(walletKeys, oldIndex, newIndex);
-
+    
       const reorderedItems = reorderedKeys.reduce((acc, key) => {
         if (singleData.items) {
-            acc[key] = singleData.items[key]; 
+          acc[key] = singleData.items[key];
         }
-      return acc;
-      }, {} as Record<string, typeof singleData.items[keyof typeof singleItemData.items]>);
-
+        return acc;
+      }, {} as Record<string, ItemDetails>);
+    
       dispatch(pnlSingleDataFetchSuccess({ ...singleData, items: reorderedItems }));
-    }
 
+      await handleReorderItems(item_type, reorderedItems);
+    };
+    
+    const handleReorderItems = async (item_type: string, reorderedItems: Record<string, ItemDetails>) => {
+      const response = await fetch(`/api/pnl_single/${item_type}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ items: reorderedItems }),
+      });
+    
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Items updated successfully:", data);
+      } else {
+        console.error("Error updating items:", data.error);
+      }
+    };
+    
     const handleInputChange = (itemKey: string, field: string, value: string) => {
       console.log(itemKey, field, value);
-      
       setSingleItemData((prevData) => {
         const updatedItem = { ...prevData[itemKey] };
-    
+
         if (field.startsWith("wallet_holders")) {
           const match = field.match(/^wallet_holders(\d+)(.+)$/);
           if (match) {
             const index = Number(match[1]);
             const holderField = match[2];
           
-            // Ensure wallet_holders is an array and initialize it if needed
             if (!updatedItem.wallet_holders || !Array.isArray(updatedItem.wallet_holders)) {
               updatedItem.wallet_holders = [];
             }
     
-            // Initialize the holder at the specific index if it doesn't exist
             if (!updatedItem.wallet_holders[index]) {
               updatedItem.wallet_holders[index] = {};
             }
     
-            // Update the specific field for the holder
             updatedItem.wallet_holders[index] = {
               ...updatedItem.wallet_holders[index],
               [holderField]: value,
             };
           }
-        } else {
-          // Directly update the field if it's not a wallet_holders field
+        }else{
           updatedItem[field] = value;
         }
-    
         return {
           ...prevData,
           [itemKey]: updatedItem,
         };
-      });
-    };
-    
+      })
+    }
 
     const handleUpdateItems = async (pnl_data_type: string) => {
       const response = await fetch(`/api/pnl_single/${pnl_data_type}`, {
@@ -232,8 +259,96 @@ const usePnLSingleData = (pnl_data_type: string) =>{
       const data = await response.json();
       console.log("Update Response:", data);
     };
+
+    const handleAddNewItem = async (pnl_data_type: string, itemName: string) => {
+      const newItem = {
+        item_name: itemName,
+      };
+
+      const response = await fetch(`/api/pnl_single/${pnl_data_type}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newItem })
+      });
+
+      const data = await response.json();
+      console.log("Add item response:", data);
+      fetchWallets();
+    }
+
+    const addNewWalletHolder = (itemKey: string) => {
+      setSingleItemData((prevData) => {
+
+        const updatedItem = { ...prevData[itemKey] };
     
-    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems };
+        if (!Array.isArray(updatedItem.wallet_holders)) {
+          updatedItem.wallet_holders = [];
+        }
+    
+        updatedItem.wallet_holders = [
+          ...updatedItem.wallet_holders,
+          { ...newWalletHolder },
+        ];
+    
+        return {
+          ...prevData,
+          [itemKey]: updatedItem, 
+        };
+      });
+    
+      setNewWalletHolder(
+        pnl_data_type === "top_wallets"
+          ? {
+              wallet_address: "",
+              total_holdings: "",
+              amount_sold_in: "",
+              holdings_in: "",
+              holdings_since: "",
+            }
+          : {
+              wallet_address_deployer: "",
+              total_deployed_projects: "",
+              total_migrated: ""
+            }
+        );
+    };
+
+    const deleteWalletHolder = (itemKey: string, walletAddress: string) => {
+      setSingleItemData((prevData) => {
+        const updatedItem = { ...prevData[itemKey] };
+    
+        if (Array.isArray(updatedItem.wallet_holders)) {
+          updatedItem.wallet_holders = updatedItem.wallet_holders.filter(
+            (holder) => holder.wallet_address !== walletAddress
+          );
+        }
+    
+        return {
+          ...prevData,
+          [itemKey]: updatedItem,
+        };
+      });
+    };
+
+    const deleteItem = async (itemKey: string) => {
+      const response = await fetch(`/api/pnl_single/${pnl_data_type}`, {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ itemKey }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        fetchWallets();
+        console.log("Item deleted successfully:", data.message);
+      } else {
+        console.error("Error deleting item:", data.error);
+      }
+    };
+    
+    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem };
 
 }
 

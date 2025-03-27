@@ -19,7 +19,8 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",

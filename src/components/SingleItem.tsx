@@ -7,11 +7,15 @@ import { HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
 interface SingleItemsPros{
   itemKey: string;
   itemName: string;
+  pnlDataType?: string;
   singleItemData?: Record<string, any>;
   onInputChange: (itemKey: string, field: string, value: string) => void;
+  addNewHolder: (itemKey: string) => void;
+  deleteWalletHolder: (itemKey: string, walletAddress: string) => void;
+  deleteItem: (itemKey: string) => void;
 }
 
-export default function Single({itemKey, itemName, singleItemData, onInputChange}: SingleItemsPros) {
+export default function Single({itemKey, itemName, pnlDataType, singleItemData, onInputChange, addNewHolder, deleteWalletHolder, deleteItem}: SingleItemsPros) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: itemKey! });
 
   const style = {
@@ -34,12 +38,12 @@ export default function Single({itemKey, itemName, singleItemData, onInputChange
   return (
     <div key={itemKey} className="track" ref={setNodeRef} style={style}>
       <div className="font-18 flex-v-center space-between" onClick={(e) => toggleDropdown(itemKey!, e)}>
-        <div>
-          <LuGrip {...attributes} {...listeners} style={{ cursor: "grab", marginRight: "10px"}} size={20}/>
-          <span>{itemName}</span>
+        <div className="flex-v-center">
+          <LuGrip {...attributes} {...listeners} style={{ cursor: "grab", marginRight: "10px", position: "relative", top: "0px"}} size={20}/>
+          <p className="m-0 m-top-5">{itemName}</p>
         </div>
       
-        <span>{openDropdowns[itemKey] ? <HiOutlineChevronUp size={20}/> : <HiOutlineChevronDown size={20}/>}</span>
+        <span>{openDropdowns[itemKey] ? <HiOutlineChevronUp size={20} className="icon-button" /> : <HiOutlineChevronDown size={20} className="icon-button"/>}</span>
       </div>
 
       {openDropdowns[itemKey] && (
@@ -60,7 +64,7 @@ export default function Single({itemKey, itemName, singleItemData, onInputChange
             ):null
           ))}
           </ul>
-          
+          <button className="delete" onClick={() => deleteItem(itemKey)}>Delete Item</button>
           {singleItemData![itemKey].wallet_holders  && Object.entries(singleItemData![itemKey].wallet_holders).map(([field, index]: any) => (
             <div key={field + index}>
               <h2>Wallet Holder {field}</h2>
@@ -77,9 +81,15 @@ export default function Single({itemKey, itemName, singleItemData, onInputChange
                   </li>
                 ))}
               </ul>
+              <button className="delete" onClick={() => deleteWalletHolder(itemKey, index.wallet_address)}>Delete wallet holder</button>
             </div>
           ))}
 
+          {(pnlDataType === "meme_coins" || pnlDataType === "first_originals") && (
+            <button className="button update" type="button" onClick={() => addNewHolder(itemKey)}>
+              Add wallet holder
+            </button>
+          )}
         </div>
       )}
     </div>
