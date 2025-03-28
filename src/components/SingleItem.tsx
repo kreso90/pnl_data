@@ -33,7 +33,6 @@ export default function Single({itemKey, itemName, pnlDataType, singleItemData, 
       ...prev,
       [key]: !prev[key],
     }));
-
   };
 
   return (

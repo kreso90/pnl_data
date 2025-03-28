@@ -3,9 +3,9 @@ import { RootState } from "@/redux/store";
 import { ItemDetails, PnlType, WalletHolder } from "@/types/PnlData";
 import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { list } from "@vercel/blob";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import _ from "lodash";
 
 
 const usePnLSingleData = (pnl_data_type: string) =>{
@@ -14,6 +14,8 @@ const usePnLSingleData = (pnl_data_type: string) =>{
     const { loading, error, singleData } = useSelector((state: RootState) => state.pnlSingleDataReducer);
     const [ singleItemData, setSingleItemData ] = useState<Record<string, Record<string, string | WalletHolder[]>>>({})
     const [blobs, setBlobs] = useState([]);
+    const [originalData, setOriginalData] = useState<any>(null);
+    
     const [newWalletHolder, setNewWalletHolder] = useState(() => {
       return pnl_data_type === "meme_coins"
         ? {
@@ -37,6 +39,7 @@ const usePnLSingleData = (pnl_data_type: string) =>{
           const response = await fetch(`/api/pnl_single/${pnl_data_type}`);
           const singleData: PnlType = await response.json();
           dispatch(pnlSingleDataFetchSuccess(singleData));
+          setOriginalData(_.cloneDeep(singleData.items)); 
       } catch (error) {
           dispatch(pnlSingleDataFetchError("Failed to load single PnL Data"));
       }
@@ -51,7 +54,15 @@ const usePnLSingleData = (pnl_data_type: string) =>{
     useEffect(() => {
       fetchWallets();
       fetchBlobsData();
+
     }, [dispatch])
+ 
+    const isDataChanged = () => {
+      if (!originalData || !singleItemData) return false;
+      
+      return !_.isEqual(originalData, singleItemData); 
+    };
+  
 
     useEffect(() => {
         if (singleData?.items) {
@@ -272,9 +283,9 @@ const usePnLSingleData = (pnl_data_type: string) =>{
       }
     };
 
-    const handleAddNewItem = async (pnl_data_type: string, itemName: string) => {
+    const handleAddNewItem = async (pnl_data_type: string) => {
       const newItem = {
-        item_name: itemName,
+        item_name: '',
       };
 
       const response = await fetch(`/api/pnl_single/${pnl_data_type}`, {
@@ -384,8 +395,9 @@ const usePnLSingleData = (pnl_data_type: string) =>{
       }
 
     };
+
     
-    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs };
+    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs, isDataChanged };
 
 }
 
