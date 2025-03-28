@@ -463,10 +463,17 @@ input[type="file"]{
   margin-right: 10px;
   font-size: 14px;
   padding: 2px;
+  margin-bottom: 10px;
 }
 
 input:focus{
   border: 2px solid var(--turquoise);
+}
+
+@media(min-width: 768px){
+  input[type="file"]{
+    margin-bottom: 0;
+  }
 }
 
 /* Flex */
