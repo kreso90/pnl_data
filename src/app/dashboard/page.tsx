@@ -39,7 +39,7 @@ export default function Dashboard() {
                 title={pnlType.button_title ?? ""} 
                 button_subtitle_1={pnlType.button_subtitle_1 ?? ""} 
                 button_subtitle_2={pnlType.button_subtitle_2 ?? ""}
-                copy_text={pnlType.copy_text ?? ""}
+                pnl_token={pnlType.pnl_token ?? ""}
                 link={pnlType.link}
                 pnl_data_type={pnlType.pnl_data_type}
                 selectedButton={selectedPnlType?.pnl_data_type}

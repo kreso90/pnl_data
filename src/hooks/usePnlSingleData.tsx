@@ -13,8 +13,10 @@ const usePnLSingleData = (pnl_data_type: string) =>{
 
     const { loading, error, singleData } = useSelector((state: RootState) => state.pnlSingleDataReducer);
     const [ singleItemData, setSingleItemData ] = useState<Record<string, Record<string, string | WalletHolder[]>>>({})
-    const [blobs, setBlobs] = useState([]);
-    const [originalData, setOriginalData] = useState<any>(null);
+    const [pnlToken, setPnlToken] = useState<string>('');
+    const [originalToken, setOriginalToken] = useState<string>('');
+    const [ blobs, setBlobs ] = useState([]);
+    const [ originalData, setOriginalData ] = useState<any>(null);
     
     const [newWalletHolder, setNewWalletHolder] = useState(() => {
       return pnl_data_type === "meme_coins"
@@ -40,6 +42,7 @@ const usePnLSingleData = (pnl_data_type: string) =>{
           const singleData: PnlType = await response.json();
           dispatch(pnlSingleDataFetchSuccess(singleData));
           setOriginalData(_.cloneDeep(singleData.items)); 
+          setPnlToken(singleData.pnl_token ?? '')
       } catch (error) {
           dispatch(pnlSingleDataFetchError("Failed to load single PnL Data"));
       }
@@ -59,11 +62,10 @@ const usePnLSingleData = (pnl_data_type: string) =>{
  
     const isDataChanged = () => {
       if (!originalData || !singleItemData) return false;
-      
-      return !_.isEqual(originalData, singleItemData); 
+    
+      return !_.isEqual(originalData, singleItemData);
     };
   
-
     useEffect(() => {
         if (singleData?.items) {
             const initialFormData: Record<string, Record<string, string | WalletHolder[]>> = {};
@@ -236,10 +238,14 @@ const usePnLSingleData = (pnl_data_type: string) =>{
     };
     
     const handleInputChange = (itemKey: string, field: string, value: string) => {
-      console.log(itemKey, field, value);
+      console.log(itemKey, field, value)
+      if (field === "pnl_token") {
+        setPnlToken(value);
+        return;
+      }
       setSingleItemData((prevData) => {
         const updatedItem = { ...prevData[itemKey] };
-
+        console.log(updatedItem)
         if (field.startsWith("wallet_holders")) {
           const match = field.match(/^wallet_holders(\d+)(.+)$/);
           if (match) {
@@ -273,11 +279,12 @@ const usePnLSingleData = (pnl_data_type: string) =>{
       const response = await fetch(`/api/pnl_single/${pnl_data_type}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items: singleItemData })
+          body: JSON.stringify({ pnl_token: pnlToken, items: singleItemData })
       });
-
+    
       if(response.ok){
         alert("List data is updated")
+        fetchWallets();
       }else{
         alert("Something went wrong")
       }
@@ -397,7 +404,7 @@ const usePnLSingleData = (pnl_data_type: string) =>{
     };
 
     
-    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs, isDataChanged };
+    return { singleData, loading, error, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs, isDataChanged, pnlToken };
 
 }
 

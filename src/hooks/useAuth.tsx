@@ -54,7 +54,7 @@ const useAuth = () => {
 
     const logout = async () => {
         await signOut({ redirect: false });
-        router.push("login")
+        router.push("/login")
     }   
 
     return { login, logout, loading, error, user };

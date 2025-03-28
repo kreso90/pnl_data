@@ -15,7 +15,7 @@ import { isMobile } from 'react-device-detect';
 export default function PnlSinglePage() {
   const { id } = useParams();
   const { logout } = useAuth();
-  const { singleData, loading, singleItemData, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs, isDataChanged } = usePnlSingleData(id as string); 
+  const { singleData, loading, singleItemData, pnlToken, handleDragEnd, handleInputChange, handleUpdateItems, handleAddNewItem, addNewWalletHolder, deleteWalletHolder, deleteItem, fileUpload, blobs, isDataChanged } = usePnlSingleData(id as string); 
 
   const inputFileRef = useRef<HTMLInputElement>(null);
  
@@ -38,19 +38,35 @@ export default function PnlSinglePage() {
       </nav>
 
       <div className="dashboard-container">
+        
         <div className="m-top-20">
           <div className="row space-between">
             <div className="col md-7 m-bottom-20 flex flex-align-end">
+            {singleData.pnl_data_type != "pnl_token" ?(
+              <div>
               <input type="file" ref={inputFileRef} />
               <button onClick={() => fileUpload(inputFileRef as React.RefObject<HTMLInputElement>)}>Upload Image</button>
+              </div>
+            ) : null}
             </div>
             <div className="col md-5 m-bottom-20 flex flex-align-end flex-md-justify-end">
-              <button className="button add m-right-10" onClick={() => handleAddNewItem(id as string)}>Add new item</button>
+              {singleData.pnl_data_type != "pnl_token" ? (<button className="button add m-right-10" onClick={() => handleAddNewItem(id as string)}>Add new item</button>) : null}
               <button className={`button update ${isDataChanged() ? "active" : ""}`} type="button" onClick={() => handleUpdateItems(id as string)}>Update List</button>
             </div>
           </div>
         </div>
-        
+
+        {singleData.pnl_data_type === "pnl_token" ?
+        (<div>
+          <label className="block font-medium">PnL Token</label>
+          <input
+              type="text"
+              value={pnlToken}
+              onChange={(e) => handleInputChange('', 'pnl_token', e.target.value)}
+              className="border p-2 w-full rounded"
+            />
+        </div>) : null
+        }
         <DndContext sensors={sensors} onDragEnd={(e) => handleDragEnd(e, id as string)}>
           <SortableContext items={singleData?.items ? Object.keys(singleData.items) : []} strategy={verticalListSortingStrategy}>
             {singleData.items && Object.entries(singleData.items).map(([key, item]) => (

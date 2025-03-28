@@ -67,7 +67,7 @@ export interface PnlType{
     pnl_data_title_small_2?: string;
     pnl_data_type?: string;
     link?: string;
-    copy_text?: string;
+    pnl_token?: string;
     items?: Record<string, ItemDetails>;
 }
 

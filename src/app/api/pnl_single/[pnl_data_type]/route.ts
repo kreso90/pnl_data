@@ -17,22 +17,38 @@ export async function GET (req: Request) {
     }
 }
 
-
-export async function PATCH(req: Request) { 
+export async function PATCH(req: Request) {
     try {
-        const { items } = await req.json();
+        const requestBody = await req.json();
+        if (!requestBody || Object.keys(requestBody).length === 0) {
+            return NextResponse.json({ error: "No data provided" }, { status: 400 });
+        }
 
         const client = await clientPromise;
         const db = client.db("pnl_data");
 
-        const parts = req.url.split("/");
-        const pnl_data_type = parts[parts.length - 1];
+        const urlParts = req.url.split("/");
+        const pnl_data_type = urlParts[urlParts.length - 1] || "";
+
+        if (!pnl_data_type) {
+            return NextResponse.json({ error: "Invalid pnl_data_type" }, { status: 400 });
+        }
 
         let updateFields: Record<string, any> = {};
+        
+        if (pnl_data_type != "pnl_token") {
+            if (requestBody.items) {
+                for (const itemKey in requestBody.items) {
+                    for (const field in requestBody.items[itemKey]) {
+                        updateFields[`items.${itemKey}.${field}`] = requestBody.items[itemKey][field];
+                    }
+                }
+            }
+        }
 
-        for (const itemKey in items) {
-            for (const field in items[itemKey]) {
-                updateFields[`items.${itemKey}.${field}`] = items[itemKey][field];
+        for (const key in requestBody) {
+            if (key !== "items") {
+                updateFields[key] = requestBody[key];
             }
         }
 
@@ -45,13 +61,14 @@ export async function PATCH(req: Request) {
             return NextResponse.json({ error: "Document not found" }, { status: 404 });
         }
 
-        return NextResponse.json({ message: "Details updated successfully" }, { status: 200 });
+        return NextResponse.json({ message: "Data updated successfully" }, { status: 200 });
 
     } catch (error) {
-        console.error("Error updating items:", error);
-        return NextResponse.json({ error: "Failed to update data"  }, { status: 500 });
+        console.error("Error updating data:", error);
+        return NextResponse.json({ error: "Failed to update data" }, { status: 500 });
     }
 }
+
 
 export async function POST(req: Request) {
     try {

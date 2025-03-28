@@ -8,7 +8,7 @@ interface PnlButtonProps {
     button_subtitle_1?: string;
     button_subtitle_2?: string;
     link?: string;
-    copy_text?: string;
+    pnl_token?: string;
     pnl_data_type?: string;
     selectedButton?: string;
     pnl_data?: PnlType,
@@ -16,16 +16,16 @@ interface PnlButtonProps {
     handleClickButon?: (pnl_data_type: string, pnl_data: PnlType) => void;
 }
 
-export default function PnlButton({ title, button_subtitle_1, button_subtitle_2, link, copy_text, pnl_data_type, selectedButton, pnl_data, handleClickButon, isDashButton }: PnlButtonProps) {
+export default function PnlButton({ title, button_subtitle_1, button_subtitle_2, link, pnl_token, pnl_data_type, selectedButton, pnl_data, handleClickButon, isDashButton }: PnlButtonProps) {
 
   const handleButtonClick = () => {
-    const selectedText = copy_text || pnl_data_type || '';
+    const selectedText = pnl_token || pnl_data_type || '';
     
-    if (copy_text) {
+    if (pnl_token && !isDashButton) {
       handleCopy(selectedText);
     }
 
-    if (handleClickButon) {
+    if (handleClickButon && pnl_data_type != "pnl_token") {
       handleClickButon(selectedText, pnl_data!);
     }
   };
