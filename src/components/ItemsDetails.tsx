@@ -35,7 +35,7 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
 
                 <div className="effect-delay-3">
                     <p>Last 20 Trades:</p>
-                    <ul className="list between-space-list-list">
+                    <ul className="list between-space-list">
                         <li>
                             <span>Average Daily Trades</span>
                             <span>${details?.average_daily_trades}</span>
@@ -90,7 +90,7 @@ export default function ItemsDetails({ pnl_data_type, details }: ItemDetailsProp
 
             <div className="effect-delay-4">
                 <p>Last 20 Trades:</p>
-                <ul className="list between-space-list-list">
+                <ul className="list between-space-list">
                     <li>
                         <span>WinRate</span>
                         <span>${details?.win_rate}</span>
