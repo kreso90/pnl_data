@@ -54,7 +54,7 @@ export default function Single({itemKey, itemName, pnlDataType, singleItemData, 
             field !== "wallet_holders" ? (
               <li key={field}>
                 <label className="block font-medium">{field.replace(/_/g, " ")}</label>
-                {field === "logo" || field === "profile_img" || field === "box_image" ? (
+                {field === "logo" || field === "profile_img" || field === "box_image" || field === "token_logo" ? (
                   <select
                     value={value}
                     onChange={(e) => onInputChange(itemKey, field, e.target.value)}
